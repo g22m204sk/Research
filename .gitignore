@@ -1,0 +1,6 @@
+# チェックポイント無視
+.ckpyt
+
+#.sln .csprojを無視
+*.sln
+*.csproj
