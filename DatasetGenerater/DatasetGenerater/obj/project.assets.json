@@ -15,11 +15,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Koichi_S\\Desktop\\Research_UG\\DatasetGenerater\\DatasetGenerater\\DatasetGenerater.csproj",
+      "projectUniqueName": "C:\\Users\\Koichi_S\\Desktop\\RESEARCH\\DatasetGenerater\\DatasetGenerater\\DatasetGenerater.csproj",
       "projectName": "DatasetGenerater",
-      "projectPath": "C:\\Users\\Koichi_S\\Desktop\\Research_UG\\DatasetGenerater\\DatasetGenerater\\DatasetGenerater.csproj",
+      "projectPath": "C:\\Users\\Koichi_S\\Desktop\\RESEARCH\\DatasetGenerater\\DatasetGenerater\\DatasetGenerater.csproj",
       "packagesPath": "C:\\Users\\Koichi_S\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Koichi_S\\Desktop\\Research_UG\\DatasetGenerater\\DatasetGenerater\\obj\\",
+      "outputPath": "C:\\Users\\Koichi_S\\Desktop\\RESEARCH\\DatasetGenerater\\DatasetGenerater\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
