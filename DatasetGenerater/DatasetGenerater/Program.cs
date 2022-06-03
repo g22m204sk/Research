@@ -17,15 +17,37 @@ namespace DatasetGenerater
             //for (int i = 0; i < 100; i++)
             //     Console.WriteLine(g.GenerateVariableName());
 
-
+            /*using (var fileStream = new FileStream("pro_jpn_variable.txt", FileMode.Open))
+            {
+                fileStream.SetLength(0);
+            }*/
             //Console.WriteLine(g.GenerateVarArray());
-            
-             var a = g.Generate(10); 
-             for(int i = 0; i < a.Count; i++)
+            using (StreamWriter sw = new StreamWriter("pro_jpn_variable1.txt"))
+            {
+                
+                for (int i = 0; i < 10; i++)
+                {
+                    List<string> data = g.Generate(100);
+
+                    foreach (var d in data)
+                        sw.Write(d);
+
+
+                }
+            }
+
+            Console.WriteLine("完了");
+            //List<string> data = g.Generate(10); 
+
+
+
+
+
+            /*for(int i = 0; i < a.Count; i++)
              {
                  Console.WriteLine(a[i]);
                  Console.WriteLine();
-             }
+             }*/
 
         }
     }
@@ -42,7 +64,6 @@ namespace DatasetGenerater
             "string",
             "bool",
             "var",
-            "object"
        };
         string[] _oprator = new string[]
         {
@@ -102,20 +123,15 @@ namespace DatasetGenerater
             {
                 for (int j = 0; j < datasize; j++)
                 {
-                    string name = GenerateVariableName();
-
-                    int zero = random.Next(0, 100);
                     int set = random.Next(0, 10);
                     switch (i)
                     {
                         //intの時
                         case 0:
-
                             // 20%の確率で宣言
                             if (set > thre) dataset.Add(GeneString(VariableType.Int, GeneMode.declaration));
                             else dataset.Add(GeneString(VariableType.Int, GeneMode.assign));
                             break;
-
 
                         case 1:
                             if (set > thre) dataset.Add(GeneString(VariableType.Float, GeneMode.declaration));
@@ -168,8 +184,7 @@ namespace DatasetGenerater
                             if (set > thre) dataset.Add(GenerateArray(VariableType.String, GeneMode.declaration));
                             else dataset.Add(GenerateArray(VariableType.String, GeneMode.assign));
                             break;
-                        case 13:
-                            dataset.Add(GenerateVarArray());
+                        default:
                             break;
                     }
                 }
@@ -193,7 +208,7 @@ namespace DatasetGenerater
                         int value = random.Next(-10000, 10000);
                         value = zero % 10 == 0 ? 0 : value;
                         tmp_string += ("int " + name + "=" + value.ToString() + ";" + Environment.NewLine);
-                        tmp_string += ("整数型変数" + name + "を宣言し" + value.ToString() + "を代入");
+                        tmp_string += ("整数型変数" + name + "を宣言し" + value.ToString() + "を代入" + Environment.NewLine);
                         break;
                     case VariableType.Float:
                         double value_f = random.Next(-10000, 10000) + random.NextDouble();
@@ -201,7 +216,7 @@ namespace DatasetGenerater
                         value_f = Math.Truncate(value_f * Math.Pow(10, digit)) / Math.Pow(10, digit);
                         value_f = zero % 10 == 0 ? 0 : value_f;
                         tmp_string += ("float " + name + "=" + value_f.ToString() + "f;" + Environment.NewLine);
-                        tmp_string += ("実数型変数" + name + "を宣言し" + value_f.ToString() + "を代入");
+                        tmp_string += ("実数型変数" + name + "を宣言し" + value_f.ToString() + "を代入" + Environment.NewLine);
                         break;
                     case VariableType.Double:
                         double value_d = random.Next(-10000, 10000) + random.NextDouble();
@@ -210,18 +225,19 @@ namespace DatasetGenerater
                         value_d = zero % 10 == 0 ? 0 : value_d;
 
                         tmp_string += ("double " + name + "=" + value_d.ToString() + ";" + Environment.NewLine);
-                        tmp_string += ("実数型変数" + name + "を宣言し" + value_d.ToString() + "を代入");
+                        tmp_string += ("実数型変数" + name + "を宣言し" + value_d.ToString() + "を代入" + Environment.NewLine);
                         break;
                     case VariableType.Bool:
                         bool flag = random.Next(0, 100) % 2 == 0;
-                        tmp_string += ("bool " + name + "=" + flag.ToString() + ";" + Environment.NewLine);
-                        tmp_string += ("bool型変数" + name + "を宣言し" + flag.ToString() + "を代入");
+                        string value_b = flag ? "true" : "false";
+                        tmp_string += ("bool " + name + "=" + value_b.ToString() + ";" + Environment.NewLine);
+                        tmp_string += ("bool型変数" + name + "を宣言し" + value_b.ToString() + "を代入" + Environment.NewLine);
                         break;
                     case VariableType.Char:
                         char value_c = charas[random.Next(0, charas.Length)];
                         value_c = zero % 10 == 0 ? ' ' : value_c;
                         tmp_string += ("char " + name + "='" + value_c.ToString() + "';" + Environment.NewLine);
-                        tmp_string += ("文字型変数" + name + "を宣言し" + value_c.ToString() + "を代入");
+                        tmp_string += ("文字型変数" + name + "を宣言し'" + value_c.ToString() + "'を代入" + Environment.NewLine);
                         break;
                     case VariableType.String:
                         int len = random.Next(2, 15);
@@ -229,14 +245,14 @@ namespace DatasetGenerater
                         for (int s = 0; s < len; s++, value_s += charas[random.Next(0, charas.Length)]) ;
                         value_s = zero % 10 == 0 ? "" : value_s;
                         tmp_string += ("string " + name + "=\"" + value_s.ToString() + "\";" + Environment.NewLine);
-                        tmp_string += ("文字列型変数" + name + "を宣言し" + value_s.ToString() + "を代入");
+                        tmp_string += ("文字列型変数" + name + "を宣言し\"" + value_s.ToString() + "\"を代入" + Environment.NewLine);
                         break;
                 }
             }
             else
             {
                 tmp_string += english_val[val] + " " + name + ";" + Environment.NewLine;
-                tmp_string += japanese_val[val] + "変数" + name + "を宣言";
+                tmp_string += japanese_val[val] + "変数" + name + "を宣言" + Environment.NewLine;
             }
             return tmp_string;
         }
@@ -246,13 +262,13 @@ namespace DatasetGenerater
             string s = "";
             Random random = new Random();
             var types = (VariableType[])Enum.GetValues(typeof(VariableType));
-            int type_num = random.Next(0, types.Length-1);
+            int type_num = random.Next(0, types.Length - 1);
             s = GeneString(types[type_num], GeneMode.assign);
-            var ss = s.Split(';');
+            var ss = s.Split(Environment.NewLine);
             ss[0] = ss[0].Replace(english_val[types[type_num]], "var").Replace(Environment.NewLine, "");
             ss[1] = ss[1].Replace(japanese_val[types[type_num]], "var型").Replace(Environment.NewLine, "");
 
-            return ss[0] + ";" + Environment.NewLine + ss[1];
+            return ss[0] + Environment.NewLine + ss[1] + Environment.NewLine;
         }
         public string GenerateArray(VariableType type, GeneMode mode)
         {
@@ -260,16 +276,16 @@ namespace DatasetGenerater
             string name = GenerateVariableName();
             int indexSize = random.Next(1, 10);
             string result = "";
-            if(mode == GeneMode.assign)
+            if (mode == GeneMode.assign)
             {
                 switch (type)
                 {
                     case VariableType.Int:
                         string index = "";
                         for (int i = 0; i < indexSize; i++)
-                            index += random.Next(-1000, 1000).ToString() + "f,";
+                            index += random.Next(-1000, 1000).ToString() + ",";
                         result += "int[] " + name + "=new int[]{" + index + "};" + Environment.NewLine;
-                        result += "整数型配列" + name + "を宣言し{" + index + "}を代入";
+                        result += "整数型配列" + name + "を宣言し{" + index + "}を代入" + Environment.NewLine;
                         break;
                     case VariableType.Float:
                         string index_f = "";
@@ -278,36 +294,36 @@ namespace DatasetGenerater
                             int digit = random.Next(1, 3);
                             double tmp_f = random.Next(-1000, 1000) + random.NextDouble();
                             tmp_f = Math.Floor(tmp_f * Math.Pow(10, digit)) / Math.Pow(10, digit);
-                            index_f += tmp_f + ",";
+                            index_f += tmp_f + "f,";
                         }
                         result += "float[] " + name + "=new float[]{" + index_f + "};" + Environment.NewLine;
-                        result += "実数型配列" + name + "を宣言し{" + index_f + "}を代入";
+                        result += "実数型配列" + name + "を宣言し{" + index_f + "}を代入" + Environment.NewLine;
                         break;
                     case VariableType.Double:
                         string index_d = "";
                         for (int i = 0; i < indexSize; i++)
                         {
-                            int digit = random.Next(1, 3);
+                            int digit = random.Next(1, 4);
                             double tmp_d = random.Next(-1000, 1000) + random.NextDouble();
                             tmp_d = Math.Floor(tmp_d * Math.Pow(10, digit)) / Math.Pow(10, digit);
                             index_d += tmp_d + ",";
                         }
                         result += "double[] " + name + "=new double[]{" + index_d + "};" + Environment.NewLine;
-                        result += "実数型配列" + name + "を宣言し{" + index_d + "}を代入";
+                        result += "実数型配列" + name + "を宣言し{" + index_d + "}を代入" + Environment.NewLine;
                         break;
                     case VariableType.Bool:
                         string index_b = "";
                         for (int i = 0; i < indexSize; i++)
-                            index_b += (random.Next(0, 100) % 2 == 0).ToString() + ",";
+                            index_b += (random.Next(0, 100) % 2 == 0) ? "true," : "false,";
                         result += "bool[] " + name + "=new bool[]{" + index_b + "};" + Environment.NewLine;
-                        result += "bool型配列" + name + "を宣言し{" + index_b + "}を代入";
+                        result += "bool型配列" + name + "を宣言し{" + index_b + "}を代入" + Environment.NewLine;
                         break;
                     case VariableType.Char:
                         string index_c = "";
                         for (int i = 0; i < indexSize; i++)
                             index_c += "'" + charas[random.Next(0, charas.Length)] + "',";
                         result += "char[] " + name + "=new char[]{" + index_c + "};" + Environment.NewLine;
-                        result += "文字型配列" + name + "を宣言し{" + index_c + "}を代入";
+                        result += "文字型配列" + name + "を宣言し{" + index_c + "}を代入" + Environment.NewLine;
                         break;
                     case VariableType.String:
                         string index_s = "";
@@ -322,29 +338,30 @@ namespace DatasetGenerater
                         }
 
                         result += "string[] " + name + "=new string[]{" + index_s + "};" + Environment.NewLine;
-                        result += "文字列型配列" + name + "を宣言し{" + index_s + "}を代入";
-                        break; 
+                        result += "文字列型配列" + name + "を宣言し{" + index_s + "}を代入" + Environment.NewLine;
+                        break;
 
                 }
-            }else
+            }
+            else
             {
                 result += english_val[type] + "[] " + name + ";" + Environment.NewLine;
-                result += japanese_val[type] + "配列" + name + "を宣言";
+                result += japanese_val[type] + "配列" + name + "を宣言" + Environment.NewLine;
             }
             return result;
-        } 
+        }
         public string GenerateVarArray()
         {
             string s = "";
             Random random = new Random();
             var types = (VariableType[])Enum.GetValues(typeof(VariableType));
-            int type_num = random.Next(0, types.Length-1);
+            int type_num = random.Next(0, types.Length - 1);
             s = GenerateArray(types[type_num], GeneMode.assign);
-            var ss = s.Split(';');
-            ss[0] = "var"+ ss[0].Remove(0,english_val[types[type_num]].Length).Replace(Environment.NewLine, "");
-            ss[1] = ss[1].Replace(japanese_val[types[type_num]],"var型").Replace(Environment.NewLine, "");
-            return ss[0] + ";" + Environment.NewLine + ss[1];
-        } 
+            var ss = s.Split(Environment.NewLine);
+            ss[0] = "var" + ss[0].Remove(0, english_val[types[type_num]].Length).Replace(Environment.NewLine, "");
+            ss[1] = ss[1].Replace(japanese_val[types[type_num]], "var型").Replace(Environment.NewLine, "");
+            return ss[0] + Environment.NewLine + ss[1] + Environment.NewLine;
+        }
 
         //ちゃんとした英単語を変数名につけるように
         public string GenerateVariableName()
