@@ -12,7 +12,7 @@ namespace DatasetGenerater
             Generater g = new Generater();
             VariableGenerater _vGene = new VariableGenerater();
 
-            // _vGene.Output();
+             _vGene.Output();
 
             //for (int i = 0; i < 100; i++)
             //     Console.WriteLine(g.GenerateVariableName());
@@ -22,19 +22,27 @@ namespace DatasetGenerater
                 fileStream.SetLength(0);
             }*/
             //Console.WriteLine(g.GenerateVarArray());
-            using (StreamWriter sw = new StreamWriter("pro_jpn_variable1.txt"))
+            /*using (StreamWriter sw = new StreamWriter("pro_jpn_variable_int.txt"))
             {
-                
+                /*
                 for (int i = 0; i < 10; i++)
                 {
                     List<string> data = g.Generate(100);
 
                     foreach (var d in data)
                         sw.Write(d);
+                }
 
+                Random random = new Random();
+                int thre = 7;
+
+                for(int i =0; i < 100000; i++)
+                {
+                    if (random.Next(0, 10) > thre) sw.Write(g.GeneString(VariableType.Int, GeneMode.declaration));
+                    else sw.Write(g.GeneString(VariableType.Int, GeneMode.assign));
 
                 }
-            }
+            }*/
 
             Console.WriteLine("完了");
             //List<string> data = g.Generate(10); 
@@ -192,7 +200,19 @@ namespace DatasetGenerater
             return dataset;
         }
 
-
+        public List<string> GenerateINT(int datasize)
+        {
+            Random random = new Random();
+            List<string> datas = new List<string>();
+            int thre = 7;
+            for(int i =0;i < datasize; i++)
+            {
+                int set = random.Next(0, 10);
+                if (thre > 7) datas.Add(GeneString(VariableType.Int, GeneMode.declaration));
+                else datas.Add(GeneString(VariableType.Int, GeneMode.assign));
+            }
+            return datas;
+        }
         public string GeneString(VariableType val, GeneMode mode)
         {
             Random random = new Random();
@@ -431,6 +451,10 @@ namespace DatasetGenerater
             "var",
             "object",
             "bool",
+            "string",
+            "long",
+            "short",
+            "char"
         };
 
 
@@ -453,16 +477,21 @@ namespace DatasetGenerater
                 string[] dataset_sepa = dataset.Split(new char[] { '\n' }, StringSplitOptions.None);
                 Console.WriteLine("データ読み込み完了");
                 Console.WriteLine("変数名を検索中です");
-                for (int i = 0; i < dataset_sepa.Length; i += 2)
+                for (int i = 0; i < dataset_sepa.Length; i++)
                 {
                     for (int j = 0; j < _variableNames.Length; j++)
                     {
-                        if (dataset_sepa[i].Contains(_variableNames[j] + " "))
+                        if (dataset_sepa[i].Contains(_variableNames[j]))
                         {
+                            string tmp = "";
+                            if (dataset_sepa[i].Contains("["))
+                                tmp = dataset_sepa[i].Replace(_variableNames[j] + "[]", "").TrimStart();
+                            else 
+                                tmp = dataset_sepa[i].Replace(_variableNames[j], "").TrimStart();
                             //変数型の後から2個目の空白までを変数名として抽出
-                            string tmp = dataset_sepa[i].Remove(0, dataset_sepa[i].IndexOf(_variableNames[j]) + _variableNames[j].Length).TrimStart();
+                            //string tmp = dataset_sepa[i].Remove(0, dataset_sepa[i].IndexOf(_variableNames[j]) + _variableNames[j].Length).TrimStart();
                             try
-                            {
+                            { 
                                 string tmp_result = "";
                                 if (tmp.Contains(" "))
                                     tmp_result = tmp.Substring(0, tmp.IndexOf(" ")) + Environment.NewLine;
@@ -472,9 +501,12 @@ namespace DatasetGenerater
                                 tmp_result = tmp_result.Length > 20 ? "" : tmp_result;
                                 tmp_result = Regex.IsMatch(tmp_result, @"[\p{IsHiragana}\p{IsKatakana}\p{IsCJKUnifiedIdeographs}]+") ? "" : tmp_result;
                                 tmp_result = tmp_result.Replace(",", "").Replace(")", "").Replace(";", "").Replace("//", "").Replace("=", "").Replace("!=", "").Replace("==", "").Replace("!", "").Replace("(", "").Replace(":", "").Replace("[", "").Replace("]", "");
+                                tmp_result = tmp_result.Replace("&lt", "").Replace("&gt", "").Replace("+","").Replace("-","").Replace("/","").Replace("*","").Replace("&amp","").Replace("&amp;", "").Replace("&lt;", "").Replace("&gt;", "");
+                                tmp_result = tmp_result.Contains(".") ? "" : tmp_result;
                                 tmp_result = tmp_result.Substring(0, 1) == "_" ? tmp_result.Remove(0, 1) : tmp_result;
                                 tmp_result = tmp_result.Contains("\"") ? "" : tmp_result;
-
+                                
+                                //tmp_result = Regex.IsMatch(tmp_result, @"[0-9a-z-A-Z]+") ? tmp_result : "";
                                 //1文字の変数名は省く
                                 result += tmp_result.Length > 3 ? tmp_result : "";
                             }
@@ -491,7 +523,7 @@ namespace DatasetGenerater
             string[] _after = DeleteDuplicate(result.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries));
 
             Console.WriteLine(Environment.NewLine + "書き出します");
-            using (StreamWriter sw = new StreamWriter(@"C:\Users\Koichi_S\Desktop\RESEARCH\variabletName.txt"))
+            using (StreamWriter sw = new StreamWriter(@"C:\Users\Koichi_S\Desktop\RESEARCH\variabletName1.txt"))
             {
                 for (int i = 0; i < _after.Length; i++)
                 {
